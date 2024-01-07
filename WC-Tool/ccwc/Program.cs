@@ -1,4 +1,6 @@
-﻿namespace ccwc
+﻿using System.Text;
+
+namespace ccwc
 {
     internal class Program
     {
@@ -6,35 +8,63 @@
         {
             Program program = new Program();
 
-            string filepath = "";
+            if (args.Length > 0 )
+            {
+                string filepath = "";
 
-            if (args[0] == "-c")
-            {
-                try
+                if ( args.Length > 1)
                 {
                     filepath = $".\\{args[1]}";
-                    Console.WriteLine($"{program.GetNumberOfBytesOfAFile(filepath)} {args[1]}");
                 }
-                catch { }
 
-            }
-            else if (args[0] == "-l")
-            {
-                try
+                if (args[0] == "-c")
                 {
-                    filepath = $".\\{args[1]}";
-                    Console.WriteLine($"{program.GetNumberOfLinesOfAFile(filepath)} {args[1]}");
+                    try
+                    {
+                        Console.WriteLine($"{program.GetNumberOfBytesOfAFile(filepath)} {args[1]}");
+                    }
+                    catch { }
+
                 }
-                catch { }
-            }
-            else if (args[0] == "-w")
-            {
-                try
+                else if (args[0] == "-l")
                 {
-                    filepath = $".\\{args[1]}";
-                    Console.WriteLine($"{program.GetNumberOfWordsOfAFile(filepath)} {args[1]}");
+                    if (args.Length == 1)
+                    {
+                        Console.WriteLine($"{program.GetNumberOfLinesOfAFile(program.FilePath())}");
+                    }
+                        
+                    try
+                    {
+                        Console.WriteLine($"{program.GetNumberOfLinesOfAFile(filepath)} {args[1]}");
+                    }
+                    catch { }
+                    
                 }
-                catch { }
+                else if (args[0] == "-w")
+                {
+                    try
+                    {
+                        Console.WriteLine($"{program.GetNumberOfWordsOfAFile(program.StringList(filepath))} {args[1]}");
+                    }
+                    catch { }
+                }
+                else if (args[0] == "-m")
+                {
+                    try
+                    {
+                        Console.WriteLine($"{program.GetNumberOfCharactersOfAFile(program.Document(filepath))} {args[1]}");
+                    }
+                    catch { }
+                }
+                else if (args[0].Contains(".txt") && args.Length == 1)
+                {
+                    try
+                    {
+                        filepath = $".\\{args[0]}";
+                        Console.WriteLine($"{program.GetNumberOfLinesOfAFile(filepath)} {program.GetNumberOfWordsOfAFile(program.StringList(filepath))} {program.GetNumberOfBytesOfAFile(filepath)} {args[0]}");
+                    }
+                    catch { }
+                }
             }
 
             Console.ReadLine();
@@ -58,9 +88,60 @@
             return File.ReadAllLines(filepath).Length;
         }
 
-        private int GetNumberOfWordsOfAFile(string filepath)
+        private int GetNumberOfWordsOfAFile(List<string> strings)
         {
+            return strings.Count;
+        }
 
+        private int GetNumberOfCharactersOfAFile(string strings)
+        {
+            return strings.Count();
+        }
+
+        private List<string> StringList(string filepath)
+        {
+            StreamReader streamReader = new StreamReader(filepath);
+
+            string? line;
+            List<string> result = new List<string>();
+
+            while ((line = streamReader.ReadLine()) != null)
+            {
+                line = line.Trim();
+
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    result.AddRange(line.Split(' '));
+                }
+            }
+
+            return result;
+        }
+
+        private string Document(string filepath)
+        {
+            StreamReader streamReader = new StreamReader(filepath);
+
+            string? line;
+            StringBuilder file = new StringBuilder();
+            List<string> result = new List<string>();
+
+            while ((line = streamReader.ReadLine()) != null)
+            {
+                file.AppendLine(line);
+            }
+
+            return file.ToString();
+        }
+
+        private string FilePath()
+        {
+            string? text = Console.In.ReadToEnd();
+            string fileName = "test1.txt";
+
+            File.WriteAllText(fileName, text);
+
+            return $".\\{fileName}";
         }
     }
 }
