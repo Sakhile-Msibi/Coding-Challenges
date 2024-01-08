@@ -109,8 +109,7 @@ namespace ccwc
 
             while ((line = streamReader.ReadLine()) != null)
             {
-                line = line.TrimStart();
-                line = line.TrimEnd();
+                line = line.TrimStart().TrimEnd();
 
                 if (!string.IsNullOrWhiteSpace(line))
                 {
