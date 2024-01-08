@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ccwc
 {
@@ -104,14 +105,16 @@ namespace ccwc
 
             string? line;
             List<string> result = new List<string>();
+            Regex regex = new Regex(@"\s");
 
             while ((line = streamReader.ReadLine()) != null)
             {
-                line = line.Trim();
+                line = line.TrimStart();
+                line = line.TrimEnd();
 
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    result.AddRange(line.Split(' '));
+                    result.AddRange(regex.Split(line));
                 }
             }
 
